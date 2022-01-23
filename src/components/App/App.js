@@ -19,7 +19,7 @@ class App extends Component {
 
   formOnSubmitContact = newContact => {
     const compareContact = this.state.contacts.find(
-      contact => contact.name.toLowerCase() === newContact.name.toLowerCase(),
+      contact => contact.name.toLowerCase() === newContact.name.toLowerCase()
     );
 
     compareContact
@@ -39,6 +39,21 @@ class App extends Component {
     }));
   };
 
+  componentDidMount() {
+    const contacts = localStorage.getItem('contacts');
+    const parsedContacts = JSON.parse(contacts);
+
+    if (parsedContacts) {
+      this.setState({ contacts: parsedContacts });
+    }
+  }
+
+  componentDidUpdate(prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
+
   render() {
     const { formOnSubmitContact, filterImputId, changeFilter, deleteContact } =
       this;
@@ -46,7 +61,7 @@ class App extends Component {
     const contacts = this.state.contacts;
     const normalizedFilter = this.state.filter.toLowerCase();
     const visibledContacts = contacts.filter(contact =>
-      contact.name.toLowerCase().includes(normalizedFilter),
+      contact.name.toLowerCase().includes(normalizedFilter)
     );
 
     return (
@@ -56,8 +71,7 @@ class App extends Component {
         <h2>Contacts</h2>
         <Filter id={filterImputId} value={filter} changeFilter={changeFilter} />
         <ContactList
-          contacts={contacts}
-          visibledContacts={visibledContacts}
+          contacts={visibledContacts}
           onDeleteContact={deleteContact}
         />
       </div>
